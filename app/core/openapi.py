@@ -8,6 +8,7 @@ from app.core.config import settings
 TAGS_METADATA: list[dict[str, Any]] = [
     {"name": "health", "description": "서버 상태 확인"},
     {"name": "config", "description": "시스템 설정 조회/변경 및 변경 이력 (F-10)"},
+    {"name": "parts", "description": "부품 마스터 CRUD (F-02)"},
 ]
 
 _COMMON_ERROR_RESPONSES: dict[str, dict[str, Any]] = {
