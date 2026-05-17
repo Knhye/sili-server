@@ -92,3 +92,4 @@ desktop.ini
 # Local Claude / OMC state (uncomment if you don't want to share)
 .claude/
 .omc/
+docs/**
