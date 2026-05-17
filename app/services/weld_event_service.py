@@ -1,4 +1,4 @@
-"""F-01 공정 데이터 수집 + F-09 이력·추적성 — 서비스 레이어.
+"""F-01 공정 데이터 수집 + F-07 알림 푸시 + F-09 이력·추적성 — 서비스 레이어.
 
 ingest_weld_event() 의 처리 흐름 (docs F-01 처리 표):
   1. 필수 필드 검증 — Pydantic 스키마(`WeldEventCreate`) 에서 자동 처리.
@@ -6,11 +6,13 @@ ingest_weld_event() 의 처리 흐름 (docs F-01 처리 표):
   3. event_id 발급 후 WeldEvent INSERT.
   4. 판정 엔진(F-04/F-05) 호출 — 결과가 있으면 `judgement` 임베드 후 save.
   5. F-06 재검 큐 적재 — 🔴 REJECT 또는 강제 격상 시 자동 enqueue.
-  6. 최종 WeldEvent 반환.
+  6. F-07 알림 푸시 — 인-프로세스 브로드캐스터로 전송 (구독자 없으면 no-op).
+  7. 최종 WeldEvent 반환.
 
 F-09 조회·내보내기 (읽기 전용)
   - list_weld_events(): 필터(part_id/point_id/status/from/to) + 페이지네이션.
   - get_weld_event(): event_id 단건 조회.
+  - get_latest_weld_event(): F-07 폴링용 최신 판정 결과.
   - stream_weld_events_csv(): 컬렉션 전체 적재 없이 CSV 한 줄씩 yield.
 """
 
@@ -22,8 +24,10 @@ from typing import Any, AsyncIterator
 
 from app.core.exceptions import AppException
 from app.models.weld_event import JudgementStatus, WeldEvent
+from app.schemas.weld_event import WeldEventRead
 from app.services.config_service import get_or_init_config
 from app.services.judgement import evaluate
+from app.services.notifier import notifier
 from app.services.part_service import get_part
 from app.services.reinspection_service import enqueue_from_judgement
 
@@ -51,6 +55,13 @@ async def ingest_weld_event(payload: dict[str, Any]) -> WeldEvent:
         await event.save()
         # 5. F-06 재검 큐 등록 (대상 아닐 시 no-op).
         await enqueue_from_judgement(event, judgement)
+        # 6. F-07 알림 푸시 (구독자 없으면 no-op).
+        await notifier.publish(
+            {
+                "type": "judgement",
+                "data": WeldEventRead.from_document(event).model_dump(mode="json"),
+            }
+        )
 
     return event
 
@@ -69,6 +80,25 @@ async def get_weld_event(event_id: str) -> WeldEvent:
             code=404,
         )
     return event
+
+
+async def get_latest_weld_event(
+    *, status: JudgementStatus | None = None
+) -> WeldEvent | None:
+    """F-07 폴링용. 판정이 있는 가장 최근 이벤트 1건. 없으면 None.
+
+    `status` 가 주어지면 해당 상태로 필터링(예: 최근 REJECT 만 조회).
+    """
+    query: dict[str, Any] = {"judgement": {"$ne": None}}
+    if status is not None:
+        query["judgement.status"] = status.value
+    docs = (
+        await WeldEvent.find(query)
+        .sort(-WeldEvent.timestamp)
+        .limit(1)
+        .to_list()
+    )
+    return docs[0] if docs else None
 
 
 async def list_weld_events(

@@ -135,8 +135,8 @@
   "hotPaths": [
     {
       "path": "app\\api\\v1\\router.py",
-      "accessCount": 12,
-      "lastAccessed": 1778983317794,
+      "accessCount": 13,
+      "lastAccessed": 1778983802874,
       "type": "file"
     },
     {
@@ -170,6 +170,12 @@
       "type": "file"
     },
     {
+      "path": "app\\services\\weld_event_service.py",
+      "accessCount": 7,
+      "lastAccessed": 1778983787917,
+      "type": "file"
+    },
+    {
       "path": "app\\db\\session.py",
       "accessCount": 5,
       "lastAccessed": 1778979549257,
@@ -185,12 +191,6 @@
       "path": "app\\models\\reinspection.py",
       "accessCount": 4,
       "lastAccessed": 1778983017546,
-      "type": "file"
-    },
-    {
-      "path": "app\\services\\weld_event_service.py",
-      "accessCount": 4,
-      "lastAccessed": 1778983283573,
       "type": "file"
     },
     {
@@ -401,6 +401,18 @@
       "path": "app\\api\\v1\\exports.py",
       "accessCount": 1,
       "lastAccessed": 1778983300552,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\notifier.py",
+      "accessCount": 1,
+      "lastAccessed": 1778983763799,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\notifications.py",
+      "accessCount": 1,
+      "lastAccessed": 1778983799071,
       "type": "file"
     }
   ],
