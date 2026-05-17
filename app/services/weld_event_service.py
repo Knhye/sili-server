@@ -5,7 +5,8 @@ ingest_weld_event() 의 처리 흐름 (docs F-01 처리 표):
   2. 부품 마스터 조회 — 미등록 시 `AppException(404)`.
   3. event_id 발급 후 WeldEvent INSERT.
   4. 판정 엔진(F-04/F-05) 호출 — 결과가 있으면 `judgement` 임베드 후 save.
-  5. 최종 WeldEvent 반환.
+  5. F-06 재검 큐 적재 — 🔴 REJECT 또는 강제 격상 시 자동 enqueue.
+  6. 최종 WeldEvent 반환.
 """
 
 import secrets
@@ -15,6 +16,7 @@ from app.models.weld_event import WeldEvent
 from app.services.config_service import get_or_init_config
 from app.services.judgement import evaluate
 from app.services.part_service import get_part
+from app.services.reinspection_service import enqueue_from_judgement
 
 
 def generate_event_id() -> str:
@@ -33,10 +35,12 @@ async def ingest_weld_event(payload: dict[str, Any]) -> WeldEvent:
     event = WeldEvent(event_id=generate_event_id(), **payload)
     await event.insert()
 
-    # 4. 판정 엔진 호출 (F-04/F-05). 현재는 placeholder 라 None 반환.
+    # 4. 판정 엔진 호출 (F-04/F-05).
     judgement = await evaluate(event, part, config)
     if judgement is not None:
         event.judgement = judgement
         await event.save()
+        # 5. F-06 재검 큐 등록 (대상 아닐 시 no-op).
+        await enqueue_from_judgement(event, judgement)
 
     return event

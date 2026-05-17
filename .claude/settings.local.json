@@ -3,7 +3,27 @@
     "allow": [
       "Bash(./venv/Scripts/python.exe *)",
       "Bash(git -C C:/Users/knhye/sili-server check-ignore -v venv sili.db .env app/__pycache__ .env.example README.md)",
-      "Bash(git -C C:/Users/knhye/sili-server status --short)"
+      "Bash(git -C C:/Users/knhye/sili-server status --short)",
+      "Bash(venv/Scripts/python.exe -c \"import app.main; print\\('OK: app.main imports cleanly'\\)\")",
+      "Bash(venv/Scripts/python.exe -m pip install motor beanie)",
+      "Bash(venv/Scripts/python.exe -c \"import app.main; print\\('OK: app.main imports cleanly'\\); print\\('Routes:', [r.path for r in app.main.app.routes]\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"import dns; print\\('dnspython OK:', dns.__version__ if hasattr\\(dns, '__version__'\\) else 'installed'\\)\")",
+      "Bash(python *)",
+      "Bash(venv/Scripts/python.exe *)",
+      "Bash(Remove-Item -Path 'app\\\\api\\\\v1\\\\users.py','app\\\\models\\\\user.py','app\\\\schemas\\\\user.py' -Force)",
+      "Bash(Write-Output 'deleted')",
+      "PowerShell(python -c \"from app.main import app; print\\('imports OK'\\); print\\('routes:', sorted\\({r.path for r in app.routes if hasattr\\(r, 'path'\\)}\\)\\)\")",
+      "PowerShell($env:PYTHONIOENCODING='utf-8'; python _verify_parts.py)",
+      "PowerShell($env:PYTHONIOENCODING='utf-8'; python _verify_f01.py)",
+      "PowerShell($env:PYTHONIOENCODING='utf-8'; python _verify_f04.py)",
+      "PowerShell($env:PYTHONIOENCODING='utf-8'; python _verify_f05.py)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "PowerShell(python -c \"from app.main import app; print\\('imports OK'\\)\")",
+      "PowerShell(python -c \"from app.services.judgement import check_forced_escalation, ForcedReason; print\\('F-04 imports OK'\\); print\\('reasons:', [r.value for r in ForcedReason]\\)\")",
+      "PowerShell(python -c \"from app.services.judgement import compute_score, status_from_score, evaluate; from app.main import app; print\\('F-05 imports OK'\\)\")",
+      "Bash(git push *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

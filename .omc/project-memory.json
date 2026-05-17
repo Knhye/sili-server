@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1778648500018,
+  "lastScanned": 1778977707597,
   "projectRoot": "C:\\Users\\knhye\\sili-server",
   "techStack": {
     "languages": [
@@ -34,7 +34,8 @@
     "isMonorepo": false,
     "workspaces": [],
     "mainDirectories": [
-      "app"
+      "app",
+      "docs"
     ],
     "gitBranches": null
   },
@@ -44,17 +45,28 @@
       "path": "app",
       "purpose": "Application code",
       "fileCount": 2,
-      "lastAccessed": 1778648499997,
+      "lastAccessed": 1778977707561,
       "keyFiles": [
         "main.py",
         "__init__.py"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 3,
+      "lastAccessed": 1778977707562,
+      "keyFiles": [
+        "v1_개발_순서.md",
+        "v1_기능명세서.md",
+        "v1_아이디어_구체화.md"
       ]
     },
     "venv": {
       "path": "venv",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1778648499998,
+      "lastAccessed": 1778977707563,
       "keyFiles": [
         "pyvenv.cfg"
       ]
@@ -63,7 +75,7 @@
       "path": "app\\api",
       "purpose": "API routes",
       "fileCount": 1,
-      "lastAccessed": 1778648499999,
+      "lastAccessed": 1778977707563,
       "keyFiles": [
         "__init__.py"
       ]
@@ -71,35 +83,48 @@
     "app\\models": {
       "path": "app\\models",
       "purpose": "Data models",
-      "fileCount": 2,
-      "lastAccessed": 1778648499999,
+      "fileCount": 4,
+      "lastAccessed": 1778977707564,
       "keyFiles": [
-        "user.py",
-        "__init__.py"
+        "part.py",
+        "welding_config.py",
+        "weld_event.py"
       ]
     },
     "app\\schemas": {
       "path": "app\\schemas",
       "purpose": "Schema definitions",
-      "fileCount": 2,
-      "lastAccessed": 1778648500000,
+      "fileCount": 4,
+      "lastAccessed": 1778977707564,
       "keyFiles": [
-        "user.py",
-        "__init__.py"
+        "config.py",
+        "part.py",
+        "weld_event.py"
+      ]
+    },
+    "app\\services": {
+      "path": "app\\services",
+      "purpose": "Business logic services",
+      "fileCount": 7,
+      "lastAccessed": 1778977707565,
+      "keyFiles": [
+        "config_seed.py",
+        "config_service.py",
+        "judgement.py"
       ]
     },
     "venv\\Lib": {
       "path": "venv\\Lib",
       "purpose": "Library code",
       "fileCount": 0,
-      "lastAccessed": 1778648500001,
+      "lastAccessed": 1778977707566,
       "keyFiles": []
     },
     "venv\\Scripts": {
       "path": "venv\\Scripts",
       "purpose": "Build/utility scripts",
-      "fileCount": 15,
-      "lastAccessed": 1778648500002,
+      "fileCount": 16,
+      "lastAccessed": 1778977707566,
       "keyFiles": [
         "activate",
         "activate.bat",
@@ -109,15 +134,255 @@
   },
   "hotPaths": [
     {
-      "path": ".env.example",
-      "accessCount": 1,
-      "lastAccessed": 1778648557686,
+      "path": "app\\models\\__init__.py",
+      "accessCount": 11,
+      "lastAccessed": 1778979834299,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\router.py",
+      "accessCount": 11,
+      "lastAccessed": 1778979834844,
+      "type": "file"
+    },
+    {
+      "path": "docs\\v1_기능명세서.md",
+      "accessCount": 10,
+      "lastAccessed": 1778977754986,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\openapi.py",
+      "accessCount": 7,
+      "lastAccessed": 1778947732529,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\weld_event.py",
+      "accessCount": 7,
+      "lastAccessed": 1778979494884,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\judgement.py",
+      "accessCount": 7,
+      "lastAccessed": 1778979496283,
+      "type": "file"
+    },
+    {
+      "path": "app\\db\\session.py",
+      "accessCount": 5,
+      "lastAccessed": 1778979549257,
+      "type": "file"
+    },
+    {
+      "path": "app\\main.py",
+      "accessCount": 4,
+      "lastAccessed": 1778979549312,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\reinspection.py",
+      "accessCount": 4,
+      "lastAccessed": 1778983017546,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\config.py",
+      "accessCount": 3,
+      "lastAccessed": 1778930207389,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\config_service.py",
+      "accessCount": 3,
+      "lastAccessed": 1778930501752,
       "type": "file"
     },
     {
       "path": "requirements.txt",
+      "accessCount": 3,
+      "lastAccessed": 1778931212166,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\welding_config.py",
+      "accessCount": 3,
+      "lastAccessed": 1778934548486,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\config.py",
+      "accessCount": 3,
+      "lastAccessed": 1778934587565,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\weld_event_service.py",
+      "accessCount": 3,
+      "lastAccessed": 1778979835380,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\welding_defaults.py",
+      "accessCount": 2,
+      "lastAccessed": 1778930205855,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\config.py",
+      "accessCount": 2,
+      "lastAccessed": 1778930210562,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\__init__.py",
+      "accessCount": 2,
+      "lastAccessed": 1778930211635,
+      "type": "file"
+    },
+    {
+      "path": "docs\\v1_아이디어_구체화.md",
+      "accessCount": 2,
+      "lastAccessed": 1778930212096,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\users.py",
+      "accessCount": 2,
+      "lastAccessed": 1778932864499,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\user.py",
+      "accessCount": 2,
+      "lastAccessed": 1778932864528,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\user.py",
+      "accessCount": 2,
+      "lastAccessed": 1778932864609,
+      "type": "file"
+    },
+    {
+      "path": "app",
+      "accessCount": 2,
+      "lastAccessed": 1778933107493,
+      "type": "directory"
+    },
+    {
+      "path": "_verify_f05.py",
+      "accessCount": 2,
+      "lastAccessed": 1778947104687,
+      "type": "file"
+    },
+    {
+      "path": "docs\\v1_개발_순서.md",
+      "accessCount": 2,
+      "lastAccessed": 1778977754445,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\part.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979495307,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\weld_events.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979501934,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\parts.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979502381,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\weld_event.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979502904,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\part.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979503487,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\part_service.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979503930,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\exceptions.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979505484,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\response.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979505994,
+      "type": "file"
+    },
+    {
+      "path": "app\\db\\base.py",
+      "accessCount": 2,
+      "lastAccessed": 1778979506060,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\reinspection_service.py",
+      "accessCount": 2,
+      "lastAccessed": 1778983000890,
+      "type": "file"
+    },
+    {
+      "path": "docs\\v1_프론트_기능명세서.md",
       "accessCount": 1,
-      "lastAccessed": 1778648558314,
+      "lastAccessed": 1778910157628,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\config_seed.py",
+      "accessCount": 1,
+      "lastAccessed": 1778930484411,
+      "type": "file"
+    },
+    {
+      "path": "_verify_parts.py",
+      "accessCount": 1,
+      "lastAccessed": 1778935685613,
+      "type": "file"
+    },
+    {
+      "path": "_verify_f01.py",
+      "accessCount": 1,
+      "lastAccessed": 1778943225544,
+      "type": "file"
+    },
+    {
+      "path": "_verify_f04.py",
+      "accessCount": 1,
+      "lastAccessed": 1778945035273,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\reinspection.py",
+      "accessCount": 1,
+      "lastAccessed": 1778979832680,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\reinspection.py",
+      "accessCount": 1,
+      "lastAccessed": 1778979833724,
       "type": "file"
     }
   ],
