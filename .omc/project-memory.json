@@ -231,8 +231,8 @@
     },
     {
       "path": "app\\services\\welding_defaults.py",
-      "accessCount": 2,
-      "lastAccessed": 1778930205855,
+      "accessCount": 3,
+      "lastAccessed": 1778984117806,
       "type": "file"
     },
     {
@@ -344,15 +344,15 @@
       "type": "file"
     },
     {
-      "path": "docs\\v1_프론트_기능명세서.md",
-      "accessCount": 1,
-      "lastAccessed": 1778910157628,
+      "path": "app\\services\\config_seed.py",
+      "accessCount": 2,
+      "lastAccessed": 1778984118228,
       "type": "file"
     },
     {
-      "path": "app\\services\\config_seed.py",
+      "path": "docs\\v1_프론트_기능명세서.md",
       "accessCount": 1,
-      "lastAccessed": 1778930484411,
+      "lastAccessed": 1778910157628,
       "type": "file"
     },
     {
@@ -413,6 +413,24 @@
       "path": "app\\api\\v1\\notifications.py",
       "accessCount": 1,
       "lastAccessed": 1778983799071,
+      "type": "file"
+    },
+    {
+      "path": "tests\\manual\\phase3\\fixtures.json",
+      "accessCount": 1,
+      "lastAccessed": 1778984287243,
+      "type": "file"
+    },
+    {
+      "path": "tests\\manual\\phase3\\run_flow.py",
+      "accessCount": 1,
+      "lastAccessed": 1778984337461,
+      "type": "file"
+    },
+    {
+      "path": "tests\\manual\\phase3\\README.md",
+      "accessCount": 1,
+      "lastAccessed": 1778984392102,
       "type": "file"
     }
   ],

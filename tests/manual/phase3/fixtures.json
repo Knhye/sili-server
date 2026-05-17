@@ -1,0 +1,84 @@
+{
+  "_about": "Phase 3 (F-06/F-07/F-09) 수동 테스트용 픽스처. 점수는 시드 config + judgement.py 기준으로 사전 계산됨.",
+
+  "part": {
+    "part_id": "TEST-PHASE3",
+    "material_code": "MILD",
+    "t1": 0.8,
+    "t2": 1.2,
+    "quality_class": "B",
+    "electrode_shape": "C-TYPE",
+    "weld_points": [
+      {"point_id": "P-001", "sequence_no": 1},
+      {"point_id": "P-002", "sequence_no": 2},
+      {"point_id": "P-003", "sequence_no": 3},
+      {"point_id": "P-004", "sequence_no": 4},
+      {"point_id": "P-005", "sequence_no": 5},
+      {"point_id": "P-006", "sequence_no": 6}
+    ]
+  },
+
+  "events": [
+    {
+      "_expected": {"status": "NORMAL", "score_approx": 0, "forced_reason": null, "queue": false},
+      "_note": "모든 값 중앙값 → 강제 격상 없음, 점수 0",
+      "part_id": "TEST-PHASE3", "point_id": "P-001",
+      "current_kA": 9.5, "weld_time_cycle": 12, "force_kN": 2.6,
+      "cumulative_hits": 1000, "t1": 0.8, "t2": 1.2,
+      "material_code": "MILD", "electrode_shape": "C-TYPE",
+      "timestamp": "2026-05-17T10:00:00Z"
+    },
+    {
+      "_expected": {"status": "CAUTION", "score_approx": 41, "forced_reason": null, "queue": false},
+      "_note": "가압력 –35% (1.7/2.6). CAUTION이지만 forced_reason 없음 → 큐 생성 X",
+      "part_id": "TEST-PHASE3", "point_id": "P-002",
+      "current_kA": 9.5, "weld_time_cycle": 12, "force_kN": 1.7,
+      "cumulative_hits": 1000, "t1": 0.8, "t2": 1.2,
+      "material_code": "MILD", "electrode_shape": "C-TYPE",
+      "timestamp": "2026-05-17T10:01:00Z"
+    },
+    {
+      "_expected": {"status": "CAUTION", "forced_reason": "THICKNESS_RATIO_OVER", "queue": true, "queue_reason": "THICKNESS_RATIO_OVER"},
+      "_note": "이벤트 두께 비 2.0/0.5 = 4.0 > 3.0 → F-04 강제 CAUTION",
+      "part_id": "TEST-PHASE3", "point_id": "P-003",
+      "current_kA": 9.5, "weld_time_cycle": 12, "force_kN": 2.6,
+      "cumulative_hits": 1000, "t1": 0.5, "t2": 2.0,
+      "material_code": "MILD", "electrode_shape": "C-TYPE",
+      "timestamp": "2026-05-17T10:02:00Z"
+    },
+    {
+      "_expected": {"status": "CAUTION", "forced_reason": "MATERIAL_MISMATCH", "queue": true, "queue_reason": "MATERIAL_MISMATCH"},
+      "_note": "마스터 MILD vs 실측 HSLA → F-04 강제 CAUTION",
+      "part_id": "TEST-PHASE3", "point_id": "P-004",
+      "current_kA": 9.5, "weld_time_cycle": 12, "force_kN": 2.6,
+      "cumulative_hits": 1000, "t1": 0.8, "t2": 1.2,
+      "material_code": "HSLA", "electrode_shape": "C-TYPE",
+      "timestamp": "2026-05-17T10:03:00Z"
+    },
+    {
+      "_expected": {"status": "CAUTION", "forced_reason": "ELECTRODE_SHAPE_MISMATCH", "queue": true, "queue_reason": "ELECTRODE_SHAPE_MISMATCH"},
+      "_note": "t_thin=0.8mm 권장은 C-TYPE 인데 R-TYPE 송신 → F-04 강제 CAUTION",
+      "part_id": "TEST-PHASE3", "point_id": "P-005",
+      "current_kA": 9.5, "weld_time_cycle": 12, "force_kN": 2.6,
+      "cumulative_hits": 1000, "t1": 0.8, "t2": 1.2,
+      "material_code": "MILD", "electrode_shape": "R-TYPE",
+      "timestamp": "2026-05-17T10:04:00Z"
+    },
+    {
+      "_expected": {"status": "REJECT", "score_approx": 100, "forced_reason": null, "queue": true, "queue_reason": "SCORE_REJECT"},
+      "_note": "복합 이상: 전류 7.0(-26%), 시간 9(-25%), 가압력 2.0(-23%) → 점수 100 clamp",
+      "part_id": "TEST-PHASE3", "point_id": "P-006",
+      "current_kA": 7.0, "weld_time_cycle": 9, "force_kN": 2.0,
+      "cumulative_hits": 1000, "t1": 0.8, "t2": 1.2,
+      "material_code": "MILD", "electrode_shape": "C-TYPE",
+      "timestamp": "2026-05-17T10:05:00Z"
+    }
+  ],
+
+  "reinspection_result_sample": {
+    "_note": "POST /reinspection/{queue_id}/result 용. queue_id는 실행 중 동적으로 채움",
+    "is_defect": true,
+    "inspector_id": "WORKER-007",
+    "notes": "재검 결과: 가압력 부족 — 너깃 직경 3.8 mm"
+  }
+}
