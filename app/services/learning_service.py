@@ -274,6 +274,61 @@ async def _gather_samples(session: NormalRangeLearning) -> list[WeldEvent]:
     return original + feedback_events
 
 
+async def get_recent_samples(
+    *,
+    line_id: str,
+    part_id: str | None = None,
+    last: int = 10,
+) -> list[dict[str, Any]]:
+    """라인의 최근 N 개 타점 표본을 시간 오름차순으로 반환.
+
+    히스토그램/추세 그래프용. `/learning/history` 는 세션 산출 시점의
+    스냅샷이라 per-sample 추세를 그릴 수 없어 분리.
+
+    Args:
+        line_id: 라인 식별자.
+        part_id: 부품 필터(선택).
+        last: 최대 표본 수 (기본 10, 최대 200).
+
+    Returns:
+        시간 오름차순 표본 리스트. 각 항목:
+            timestamp, event_id, part_id, point_id,
+            current_kA, weld_time_cycle, force_kN, cumulative_hits,
+            judgement_status (있을 때), judgement_score (있을 때)
+    """
+    query: dict[str, Any] = {"line_id": line_id}
+    if part_id is not None:
+        query["part_id"] = part_id
+
+    # 최신순으로 N 개 뽑고, 응답은 시간 오름차순(차트 표시 순서) 으로 reverse.
+    docs = (
+        await WeldEvent.find(query)
+        .sort(-WeldEvent.timestamp)
+        .limit(last)
+        .to_list()
+    )
+    docs.reverse()
+
+    rows: list[dict[str, Any]] = []
+    for d in docs:
+        j = d.judgement
+        rows.append(
+            {
+                "timestamp": d.timestamp.isoformat(),
+                "event_id": d.event_id,
+                "part_id": d.part_id,
+                "point_id": d.point_id,
+                "current_kA": d.current_kA,
+                "weld_time_cycle": d.weld_time_cycle,
+                "force_kN": d.force_kN,
+                "cumulative_hits": d.cumulative_hits,
+                "judgement_status": j.status.value if j is not None else None,
+                "judgement_score": j.score if j is not None else None,
+            }
+        )
+    return rows
+
+
 async def get_learning_history(
     *, line_id: str, part_id: str | None = None
 ) -> list[dict[str, Any]]:

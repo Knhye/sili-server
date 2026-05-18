@@ -1,6 +1,8 @@
 from app.models.learning import NormalRangeLearning
+from app.models.notification import Notification
 from app.models.part import Part
 from app.models.reinspection import ReinspectionQueue
+from app.models.user import User
 from app.models.weld_event import WeldEvent
 from app.models.welding_config import ConfigAudit, WeldingConfig
 
@@ -11,6 +13,8 @@ __all__ = [
     "WeldEvent",
     "ReinspectionQueue",
     "NormalRangeLearning",
+    "Notification",
+    "User",
 ]
 __all_documents__ = [
     WeldingConfig,
@@ -19,4 +23,6 @@ __all_documents__ = [
     WeldEvent,
     ReinspectionQueue,
     NormalRangeLearning,
+    Notification,
+    User,
 ]

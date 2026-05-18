@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1778977707597,
+  "lastScanned": 1779068152944,
   "projectRoot": "C:\\Users\\knhye\\sili-server",
   "techStack": {
     "languages": [
@@ -19,7 +19,7 @@
   },
   "build": {
     "buildCommand": null,
-    "testCommand": null,
+    "testCommand": "./venv/Scripts/python.exe -m pytest tests/ -x --tb=short -q 2>&1 | tail -50",
     "lintCommand": null,
     "devCommand": null,
     "scripts": {}
@@ -35,7 +35,8 @@
     "workspaces": [],
     "mainDirectories": [
       "app",
-      "docs"
+      "docs",
+      "tests"
     ],
     "gitBranches": null
   },
@@ -45,7 +46,7 @@
       "path": "app",
       "purpose": "Application code",
       "fileCount": 2,
-      "lastAccessed": 1778977707561,
+      "lastAccessed": 1779068152909,
       "keyFiles": [
         "main.py",
         "__init__.py"
@@ -55,18 +56,25 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 3,
-      "lastAccessed": 1778977707562,
+      "lastAccessed": 1779068152909,
       "keyFiles": [
         "v1_개발_순서.md",
         "v1_기능명세서.md",
         "v1_아이디어_구체화.md"
       ]
     },
+    "tests": {
+      "path": "tests",
+      "purpose": "Test files",
+      "fileCount": 0,
+      "lastAccessed": 1779068152910,
+      "keyFiles": []
+    },
     "venv": {
       "path": "venv",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1778977707563,
+      "lastAccessed": 1779068152912,
       "keyFiles": [
         "pyvenv.cfg"
       ]
@@ -75,7 +83,7 @@
       "path": "app\\api",
       "purpose": "API routes",
       "fileCount": 1,
-      "lastAccessed": 1778977707563,
+      "lastAccessed": 1779068152913,
       "keyFiles": [
         "__init__.py"
       ]
@@ -83,30 +91,30 @@
     "app\\models": {
       "path": "app\\models",
       "purpose": "Data models",
-      "fileCount": 4,
-      "lastAccessed": 1778977707564,
+      "fileCount": 6,
+      "lastAccessed": 1779068152913,
       "keyFiles": [
+        "learning.py",
         "part.py",
-        "welding_config.py",
-        "weld_event.py"
+        "reinspection.py"
       ]
     },
     "app\\schemas": {
       "path": "app\\schemas",
       "purpose": "Schema definitions",
-      "fileCount": 4,
-      "lastAccessed": 1778977707564,
+      "fileCount": 7,
+      "lastAccessed": 1779068152914,
       "keyFiles": [
         "config.py",
-        "part.py",
-        "weld_event.py"
+        "judgement.py",
+        "learning.py"
       ]
     },
     "app\\services": {
       "path": "app\\services",
       "purpose": "Business logic services",
-      "fileCount": 7,
-      "lastAccessed": 1778977707565,
+      "fileCount": 10,
+      "lastAccessed": 1779068152914,
       "keyFiles": [
         "config_seed.py",
         "config_service.py",
@@ -117,14 +125,14 @@
       "path": "venv\\Lib",
       "purpose": "Library code",
       "fileCount": 0,
-      "lastAccessed": 1778977707566,
+      "lastAccessed": 1779068152916,
       "keyFiles": []
     },
     "venv\\Scripts": {
       "path": "venv\\Scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 16,
-      "lastAccessed": 1778977707566,
+      "lastAccessed": 1779068152917,
       "keyFiles": [
         "activate",
         "activate.bat",
@@ -135,14 +143,26 @@
   "hotPaths": [
     {
       "path": "app\\api\\v1\\router.py",
-      "accessCount": 14,
-      "lastAccessed": 1778992560327,
+      "accessCount": 16,
+      "lastAccessed": 1779069431333,
       "type": "file"
     },
     {
       "path": "app\\models\\__init__.py",
+      "accessCount": 14,
+      "lastAccessed": 1779069425172,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\weld_event_service.py",
       "accessCount": 12,
-      "lastAccessed": 1778992556332,
+      "lastAccessed": 1779069261566,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\judgement.py",
+      "accessCount": 11,
+      "lastAccessed": 1779069134153,
       "type": "file"
     },
     {
@@ -152,15 +172,9 @@
       "type": "file"
     },
     {
-      "path": "app\\services\\weld_event_service.py",
-      "accessCount": 9,
-      "lastAccessed": 1778992581698,
-      "type": "file"
-    },
-    {
       "path": "app\\models\\weld_event.py",
-      "accessCount": 8,
-      "lastAccessed": 1778992541829,
+      "accessCount": 10,
+      "lastAccessed": 1779068938517,
       "type": "file"
     },
     {
@@ -170,45 +184,75 @@
       "type": "file"
     },
     {
-      "path": "app\\services\\judgement.py",
-      "accessCount": 7,
-      "lastAccessed": 1778979496283,
+      "path": "app\\schemas\\weld_event.py",
+      "accessCount": 6,
+      "lastAccessed": 1779068562912,
       "type": "file"
     },
     {
       "path": "app\\db\\session.py",
-      "accessCount": 5,
-      "lastAccessed": 1778979549257,
-      "type": "file"
-    },
-    {
-      "path": "app\\schemas\\weld_event.py",
-      "accessCount": 5,
-      "lastAccessed": 1778992551846,
+      "accessCount": 6,
+      "lastAccessed": 1779068579642,
       "type": "file"
     },
     {
       "path": "app\\main.py",
-      "accessCount": 4,
-      "lastAccessed": 1778979549312,
-      "type": "file"
-    },
-    {
-      "path": "app\\models\\reinspection.py",
-      "accessCount": 4,
-      "lastAccessed": 1778983017546,
+      "accessCount": 6,
+      "lastAccessed": 1779069438623,
       "type": "file"
     },
     {
       "path": "app\\services\\reinspection_service.py",
+      "accessCount": 5,
+      "lastAccessed": 1779068583015,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\reinspection.py",
+      "accessCount": 5,
+      "lastAccessed": 1779068583083,
+      "type": "file"
+    },
+    {
+      "path": "requirements.txt",
+      "accessCount": 5,
+      "lastAccessed": 1779068594879,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\weld_events.py",
       "accessCount": 4,
-      "lastAccessed": 1778993422479,
+      "lastAccessed": 1779068572074,
       "type": "file"
     },
     {
       "path": "app\\api\\v1\\config.py",
-      "accessCount": 3,
-      "lastAccessed": 1778930207389,
+      "accessCount": 4,
+      "lastAccessed": 1779068572684,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\welding_config.py",
+      "accessCount": 4,
+      "lastAccessed": 1779068572716,
+      "type": "file"
+    },
+    {
+      "path": "app\\services\\welding_defaults.py",
+      "accessCount": 4,
+      "lastAccessed": 1779068578621,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\config.py",
+      "accessCount": 4,
+      "lastAccessed": 1779068580169,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\config.py",
+      "accessCount": 4,
+      "lastAccessed": 1779068594791,
       "type": "file"
     },
     {
@@ -218,39 +262,63 @@
       "type": "file"
     },
     {
-      "path": "requirements.txt",
+      "path": "app\\services\\config_seed.py",
       "accessCount": 3,
-      "lastAccessed": 1778931212166,
+      "lastAccessed": 1779068579186,
       "type": "file"
     },
     {
-      "path": "app\\models\\welding_config.py",
+      "path": "app\\core\\response.py",
       "accessCount": 3,
-      "lastAccessed": 1778934548486,
+      "lastAccessed": 1779068580813,
       "type": "file"
     },
     {
-      "path": "app\\schemas\\config.py",
+      "path": "app\\core\\exceptions.py",
       "accessCount": 3,
-      "lastAccessed": 1778934587565,
+      "lastAccessed": 1779068581467,
       "type": "file"
     },
     {
-      "path": "app\\api\\v1\\weld_events.py",
+      "path": "app\\models\\part.py",
       "accessCount": 3,
-      "lastAccessed": 1778983314768,
+      "lastAccessed": 1779068591804,
       "type": "file"
     },
     {
-      "path": "app\\services\\welding_defaults.py",
+      "path": "app\\api\\v1\\parts.py",
       "accessCount": 3,
-      "lastAccessed": 1778984117806,
+      "lastAccessed": 1779068594087,
       "type": "file"
     },
     {
-      "path": "app\\core\\config.py",
-      "accessCount": 2,
-      "lastAccessed": 1778930210562,
+      "path": "app\\schemas\\judgement.py",
+      "accessCount": 3,
+      "lastAccessed": 1779069144008,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\notifications.py",
+      "accessCount": 3,
+      "lastAccessed": 1779069241922,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\user.py",
+      "accessCount": 3,
+      "lastAccessed": 1779069346298,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\user.py",
+      "accessCount": 3,
+      "lastAccessed": 1779069357277,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\users.py",
+      "accessCount": 3,
+      "lastAccessed": 1779069407179,
       "type": "file"
     },
     {
@@ -263,24 +331,6 @@
       "path": "docs\\v1_아이디어_구체화.md",
       "accessCount": 2,
       "lastAccessed": 1778930212096,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\users.py",
-      "accessCount": 2,
-      "lastAccessed": 1778932864499,
-      "type": "file"
-    },
-    {
-      "path": "app\\models\\user.py",
-      "accessCount": 2,
-      "lastAccessed": 1778932864528,
-      "type": "file"
-    },
-    {
-      "path": "app\\schemas\\user.py",
-      "accessCount": 2,
-      "lastAccessed": 1778932864609,
       "type": "file"
     },
     {
@@ -302,18 +352,6 @@
       "type": "file"
     },
     {
-      "path": "app\\models\\part.py",
-      "accessCount": 2,
-      "lastAccessed": 1778979495307,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\parts.py",
-      "accessCount": 2,
-      "lastAccessed": 1778979502381,
-      "type": "file"
-    },
-    {
       "path": "app\\schemas\\part.py",
       "accessCount": 2,
       "lastAccessed": 1778979503487,
@@ -326,27 +364,39 @@
       "type": "file"
     },
     {
-      "path": "app\\core\\exceptions.py",
-      "accessCount": 2,
-      "lastAccessed": 1778979505484,
-      "type": "file"
-    },
-    {
-      "path": "app\\core\\response.py",
-      "accessCount": 2,
-      "lastAccessed": 1778979505994,
-      "type": "file"
-    },
-    {
       "path": "app\\db\\base.py",
       "accessCount": 2,
       "lastAccessed": 1778979506060,
       "type": "file"
     },
     {
-      "path": "app\\services\\config_seed.py",
+      "path": "app\\services\\notifier.py",
       "accessCount": 2,
-      "lastAccessed": 1778984118228,
+      "lastAccessed": 1779068561987,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\judgements.py",
+      "accessCount": 2,
+      "lastAccessed": 1779068571649,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\reinspection.py",
+      "accessCount": 2,
+      "lastAccessed": 1779068581716,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\reinspection.py",
+      "accessCount": 2,
+      "lastAccessed": 1779068591961,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\exports.py",
+      "accessCount": 2,
+      "lastAccessed": 1779068593818,
       "type": "file"
     },
     {
@@ -371,48 +421,6 @@
       "path": "_verify_f04.py",
       "accessCount": 1,
       "lastAccessed": 1778945035273,
-      "type": "file"
-    },
-    {
-      "path": "app\\schemas\\reinspection.py",
-      "accessCount": 1,
-      "lastAccessed": 1778979832680,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\reinspection.py",
-      "accessCount": 1,
-      "lastAccessed": 1778979833724,
-      "type": "file"
-    },
-    {
-      "path": "app\\schemas\\judgement.py",
-      "accessCount": 1,
-      "lastAccessed": 1778983290085,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\judgements.py",
-      "accessCount": 1,
-      "lastAccessed": 1778983293562,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\exports.py",
-      "accessCount": 1,
-      "lastAccessed": 1778983300552,
-      "type": "file"
-    },
-    {
-      "path": "app\\services\\notifier.py",
-      "accessCount": 1,
-      "lastAccessed": 1778983763799,
-      "type": "file"
-    },
-    {
-      "path": "app\\api\\v1\\notifications.py",
-      "accessCount": 1,
-      "lastAccessed": 1778983799071,
       "type": "file"
     },
     {

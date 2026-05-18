@@ -17,6 +17,7 @@ from app.schemas.learning import (
 )
 from app.services.learning_service import (
     get_learning_history,
+    get_recent_samples,
     list_learning_sessions,
     reset_learning,
     start_learning,
@@ -72,6 +73,27 @@ async def get_learning_history_endpoint(
     part_id: str | None = Query(default=None, description="부품 ID 필터."),
 ):
     rows = await get_learning_history(line_id=line_id, part_id=part_id)
+    return success_response(data=rows)
+
+
+@router.get(
+    "/{line_id}/samples",
+    response_model=ApiResponse[list[dict]],
+    summary="라인별 최근 N개 타점 표본 (per-sample 추세용)",
+)
+async def get_recent_samples_endpoint(
+    line_id: str,
+    part_id: str | None = Query(default=None, description="부품 ID 필터."),
+    last: int = Query(
+        default=10,
+        ge=1,
+        le=200,
+        description="최대 표본 수 (기본 10, 최대 200).",
+    ),
+):
+    rows = await get_recent_samples(
+        line_id=line_id, part_id=part_id, last=last
+    )
     return success_response(data=rows)
 
 

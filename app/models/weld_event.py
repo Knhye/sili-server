@@ -67,6 +67,13 @@ class Judgement(BaseModel):
             "코드별 의미는 `ForcedReason` enum 참고."
         ),
     )
+    message: str = Field(
+        default="",
+        description=(
+            "상태 배너용 한국어 메시지. `forced_reason` 우선, 없으면 status "
+            "기반 기본 문구. 클라이언트는 그대로 표시한다 (재포맷 불필요)."
+        ),
+    )
     deviations: JudgementDeviation = Field(
         default_factory=JudgementDeviation,
         description="가중합 계산에 들어간 항목별 기여도.",

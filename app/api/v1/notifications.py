@@ -1,12 +1,15 @@
-"""F-07. 현장 알림 — REST(폴링) + WebSocket(실시간 푸시).
+"""F-07. 현장 알림 — REST(폴링·이력) + WebSocket(실시간 푸시).
 
-- GET /api/v1/events/latest : 최신 판정 결과 (폴링 폴백, status 필터)
-- WS  /api/v1/ws/events     : 실시간 판정 푸시 스트림
+- GET  /api/v1/events/latest        : 최신 판정 결과 (폴링 폴백, status 필터)
+- WS   /api/v1/ws/events            : 실시간 판정 푸시 스트림
+- GET  /api/v1/notifications        : 알림 이력 (사이드바·알림 패널)
+- GET  /api/v1/notifications/unread-count : unread 배지 카운트
+- POST /api/v1/notifications/mark-read    : 읽음 처리 (선택/전체)
 
 알림 규칙 (docs F-07)
-  🟢 NORMAL : 화면 초록
-  🟡 CAUTION: LED 황 + 화면 경고
-  🔴 REJECT : LED 적 + 부저 + 팝업
+  🟢 NORMAL : 화면 초록 (알림 저장 안 함)
+  🟡 CAUTION: LED 황 + 화면 경고 → notifications WARNING
+  🔴 REJECT : LED 적 + 부저 + 팝업 → notifications CRITICAL
 
 WS 메시지 포맷
   {"type": "judgement", "data": <WeldEventRead>}
@@ -17,8 +20,18 @@ WS 메시지 포맷
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
 
 from app.core.response import ApiResponse, success_response
+from app.models.notification import NotificationSeverity
 from app.models.weld_event import JudgementStatus
+from app.schemas.notification import (
+    NotificationMarkReadRequest,
+    NotificationRead,
+)
 from app.schemas.weld_event import WeldEventRead
+from app.services.notification_service import (
+    count_unread,
+    list_notifications,
+    mark_read,
+)
 from app.services.notifier import notifier
 from app.services.weld_event_service import get_latest_weld_event
 
@@ -64,3 +77,56 @@ async def ws_events(ws: WebSocket) -> None:
         return
     finally:
         await notifier.unsubscribe(queue)
+
+
+# --------------------------------------------------------------------------- #
+# 알림 이력 (영구 저장)
+# --------------------------------------------------------------------------- #
+
+
+@router.get(
+    "/notifications",
+    response_model=ApiResponse[list[NotificationRead]],
+    summary="알림 이력 조회 (필터·페이지네이션)",
+)
+async def list_notifications_endpoint(
+    only_unread: bool = Query(
+        default=False, description="True 시 unread 만 반환."
+    ),
+    severity: NotificationSeverity | None = Query(
+        default=None, description="심각도 필터(INFO/WARNING/CRITICAL)."
+    ),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    docs = await list_notifications(
+        only_unread=only_unread,
+        severity=severity,
+        skip=skip,
+        limit=limit,
+    )
+    return success_response(
+        data=[NotificationRead.from_document(d).model_dump(mode="json") for d in docs]
+    )
+
+
+@router.get(
+    "/notifications/unread-count",
+    response_model=ApiResponse[dict],
+    summary="unread 알림 개수 (사이드바 배지)",
+)
+async def get_unread_count_endpoint():
+    n = await count_unread()
+    return success_response(data={"unread": n})
+
+
+@router.post(
+    "/notifications/mark-read",
+    response_model=ApiResponse[dict],
+    summary="알림 읽음 처리 (선택/전체)",
+)
+async def mark_read_endpoint(payload: NotificationMarkReadRequest):
+    updated = await mark_read(payload.ids)
+    return success_response(
+        data={"updated": updated}, message="Marked as read"
+    )

@@ -29,6 +29,7 @@ from app.schemas.weld_event import WeldEventRead
 from app.services.config_service import get_or_init_config
 from app.services.judgement import evaluate
 from app.services.learning_service import update_learning_from_event
+from app.services.notification_service import record_judgement_notification
 from app.services.notifier import notifier
 from app.services.part_service import get_part
 from app.services.reinspection_service import enqueue_from_judgement
@@ -56,8 +57,11 @@ async def ingest_weld_event(payload: dict[str, Any]) -> WeldEvent:
         event.judgement = judgement
         await event.save()
         # 5. F-06 재검 큐 등록 (대상 아닐 시 no-op).
-        await enqueue_from_judgement(event, judgement)
-        # 6. F-07 알림 푸시 (구독자 없으면 no-op).
+        queue = await enqueue_from_judgement(event, judgement)
+        queue_id = queue.queue_id if queue is not None else None
+        # 6a. F-07 알림 이력 저장 (🟡/🔴 만, 🟢 은 no-op).
+        await record_judgement_notification(event, judgement, queue_id=queue_id)
+        # 6b. F-07 실시간 푸시 (구독자 없으면 no-op).
         await notifier.publish(
             {
                 "type": "judgement",

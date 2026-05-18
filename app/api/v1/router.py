@@ -5,9 +5,12 @@ from app.api.v1 import (
     exports,
     judgements,
     learning,
+    meta,
     notifications,
     parts,
     reinspection,
+    stats,
+    users,
     weld_events,
 )
 
@@ -20,3 +23,7 @@ api_router.include_router(judgements.router)
 api_router.include_router(exports.router)
 api_router.include_router(notifications.router)
 api_router.include_router(learning.router)
+api_router.include_router(meta.router)
+api_router.include_router(stats.router)
+api_router.include_router(users.auth_router)
+api_router.include_router(users.users_router)

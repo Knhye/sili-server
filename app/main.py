@@ -9,12 +9,14 @@ from app.core.openapi import setup_openapi
 from app.core.response import ApiResponse, success_response
 from app.db.session import close_db, init_db
 from app.services.config_seed import seed_default_config
+from app.services.user_seed import seed_default_admin
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     await init_db()
     await seed_default_config()
+    await seed_default_admin()
     try:
         yield
     finally:

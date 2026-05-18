@@ -30,6 +30,38 @@ from app.models.weld_event import (
 )
 from app.models.welding_config import ElectrodeWearLimit, WeldingConfig
 
+
+# 상태 배너용 한국어 메시지 (judgement.message).
+# forced_reason 이 있으면 우선, 없으면 status 기반 기본 문구.
+_FORCED_MESSAGES: dict[ForcedReason, str] = {
+    ForcedReason.MATERIAL_UNREGISTERED: (
+        "등록되지 않은 재질입니다. 자재를 확인 후 재투입하세요."
+    ),
+    ForcedReason.MATERIAL_MISMATCH: (
+        "등록된 재질과 실측 재질이 다릅니다. 자재를 확인하세요."
+    ),
+    ForcedReason.THICKNESS_RATIO_OVER: (
+        "두께 비가 한계를 초과했습니다. 수동 파라미터를 확인하세요."
+    ),
+    ForcedReason.ELECTRODE_SHAPE_MISMATCH: (
+        "권장 전극 형상과 다릅니다. 전극 장착 상태를 확인하세요."
+    ),
+}
+
+_STATUS_MESSAGES: dict[JudgementStatus, str] = {
+    JudgementStatus.NORMAL: "정상 범위입니다.",
+    JudgementStatus.CAUTION: "정상 범위에서 벗어났습니다. 파라미터를 점검하세요.",
+    JudgementStatus.REJECT: "재검권장 — 즉시 작업을 중단하고 재검 큐를 확인하세요.",
+}
+
+
+def build_message(
+    status: JudgementStatus, forced_reason: ForcedReason | None
+) -> str:
+    if forced_reason is not None:
+        return _FORCED_MESSAGES.get(forced_reason, _STATUS_MESSAGES[status])
+    return _STATUS_MESSAGES[status]
+
 # === F-04 강제 격상 상수 ===
 _CAUTION_FORCED_SCORE = 31.0
 _REJECT_FORCED_SCORE = 100.0
@@ -112,6 +144,7 @@ def _build_forced(
         score=score,
         status=status,
         forced_reason=reason,
+        message=build_message(status, reason),
         deviations=JudgementDeviation(),
     )
 
@@ -265,9 +298,11 @@ async def evaluate(
         return forced
 
     score, deviations = compute_score(event, part, config)
+    status = status_from_score(score)
     return Judgement(
         score=score,
-        status=status_from_score(score),
+        status=status,
         forced_reason=None,
+        message=build_message(status, None),
         deviations=deviations,
     )

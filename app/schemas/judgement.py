@@ -25,6 +25,9 @@ class JudgementDetailRead(BaseModel):
     score: float = Field(..., ge=0, le=100, description="이상 점수 (0~100).")
     status: JudgementStatus
     forced_reason: ForcedReason | None
+    message: str = Field(
+        default="", description="상태 배너용 한국어 메시지."
+    )
     deviations: JudgementDeviation
     created_at: datetime
 
@@ -38,6 +41,7 @@ class JudgementDetailRead(BaseModel):
             score=j.score,
             status=j.status,
             forced_reason=j.forced_reason,
+            message=j.message,
             deviations=j.deviations,
             created_at=j.created_at,
         )
