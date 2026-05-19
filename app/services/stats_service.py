@@ -40,7 +40,20 @@ async def get_shift_stats(
         - pass_rate: 합격률 (0~1, 판정 완료 기준). judged==0 이면 None.
         - hourly_rate: 시간당 생산 (total/hours, 소수점 1자리).
     """
-    end = now or datetime.now(timezone.utc)
+    if now is not None:
+        end = now
+    else:
+        real_now = datetime.now(timezone.utc)
+        anchor_filter: dict[str, Any] = {} if line_id is None else {"line_id": line_id}
+        latest = await WeldEvent.find(anchor_filter).sort("-timestamp").first_or_none()
+        if latest is not None:
+            latest_ts = latest.timestamp
+            if latest_ts.tzinfo is None:
+                latest_ts = latest_ts.replace(tzinfo=timezone.utc)
+            end = latest_ts if latest_ts < real_now else real_now
+        else:
+            end = real_now
+
     start = end - timedelta(hours=hours)
 
     base: dict[str, Any] = {"timestamp": {"$gte": start, "$lte": end}}
