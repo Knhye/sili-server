@@ -12,6 +12,7 @@ from typing import Any
 from bson import ObjectId
 from bson.errors import InvalidId
 
+from app.db.session import get_db
 from app.models.notification import Notification, NotificationSeverity
 from app.models.weld_event import (
     ForcedReason,
@@ -89,12 +90,19 @@ async def count_unread() -> int:
     return await Notification.find({"read_at": None}).count()
 
 
+def _coll():
+    """세션에서 직접 Motor 컬렉션 참조. Beanie 2.x get_motor_collection() 우회."""
+    return get_db().get_collection(Notification.Settings.name)
+
+
 async def mark_read(ids: list[str] | None) -> int:
-    """ids=None 이면 전체 unread 를 읽음. 처리된 건수 반환."""
+    """ids=None 이면 전체 unread 를 읽음 처리. 처리된 건수 반환."""
     now = datetime.now(timezone.utc)
+
     if ids is None:
-        result = await Notification.get_motor_collection().update_many(
-            {"read_at": None}, {"$set": {"read_at": now}}
+        result = await _coll().update_many(
+            {"read_at": None},
+            {"$set": {"read_at": now}},
         )
         return result.modified_count
 
@@ -103,11 +111,11 @@ async def mark_read(ids: list[str] | None) -> int:
         try:
             object_ids.append(ObjectId(s))
         except (InvalidId, ValueError, TypeError):
-            # 잘못된 ID 는 조용히 무시 — 부분 성공 OK.
             continue
     if not object_ids:
         return 0
-    result = await Notification.get_motor_collection().update_many(
+
+    result = await _coll().update_many(
         {"_id": {"$in": object_ids}, "read_at": None},
         {"$set": {"read_at": now}},
     )
