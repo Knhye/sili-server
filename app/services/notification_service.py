@@ -9,7 +9,7 @@
 from datetime import datetime, timezone
 from typing import Any
 
-from beanie import PydanticObjectId
+from bson import ObjectId
 from bson.errors import InvalidId
 
 from app.models.notification import Notification, NotificationSeverity
@@ -98,11 +98,11 @@ async def mark_read(ids: list[str] | None) -> int:
         )
         return result.modified_count
 
-    object_ids: list[PydanticObjectId] = []
+    object_ids: list[ObjectId] = []
     for s in ids:
         try:
-            object_ids.append(PydanticObjectId(s))
-        except (InvalidId, ValueError):
+            object_ids.append(ObjectId(s))
+        except (InvalidId, ValueError, TypeError):
             # 잘못된 ID 는 조용히 무시 — 부분 성공 OK.
             continue
     if not object_ids:

@@ -17,7 +17,7 @@ WS 메시지 포맷
   - 클라이언트 재연결 시 유실분은 `/events/latest` 폴링으로 복원.
 """
 
-from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Body, Query, WebSocket, WebSocketDisconnect
 
 from app.core.response import ApiResponse, success_response
 from app.models.notification import NotificationSeverity
@@ -125,8 +125,11 @@ async def get_unread_count_endpoint():
     response_model=ApiResponse[dict],
     summary="알림 읽음 처리 (선택/전체)",
 )
-async def mark_read_endpoint(payload: NotificationMarkReadRequest):
-    updated = await mark_read(payload.ids)
+async def mark_read_endpoint(
+    payload: NotificationMarkReadRequest | None = Body(default=None),
+):
+    ids = payload.ids if payload is not None else None
+    updated = await mark_read(ids)
     return success_response(
         data={"updated": updated}, message="Marked as read"
     )
