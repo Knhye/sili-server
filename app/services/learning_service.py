@@ -330,7 +330,11 @@ async def get_recent_samples(
 
 
 async def seed_learning_history(
-    *, line_id: str, part_id: str
+    *,
+    line_id: str,
+    part_id: str,
+    target_sample_count: int = 100,
+    params: LearningParams,
 ) -> NormalRangeLearning:
     """개발/테스트용 학습 이력 시드. 이미 세션이 있으면 기존 세션 반환."""
     existing = await NormalRangeLearning.find_one(
@@ -344,21 +348,19 @@ async def seed_learning_history(
     t1 = now - timedelta(hours=4)
     t2 = now - timedelta(hours=2)
 
-    p0 = LearningParams(
-        current_kA=ParamStats(mean=7.52, std=0.18, sample_count=100),
-        weld_time_cycle=ParamStats(mean=11.8, std=0.42, sample_count=100),
-        force_kN=ParamStats(mean=3.45, std=0.09, sample_count=100),
-    )
-    p1 = LearningParams(
-        current_kA=ParamStats(mean=7.55, std=0.17, sample_count=105),
-        weld_time_cycle=ParamStats(mean=11.9, std=0.40, sample_count=105),
-        force_kN=ParamStats(mean=3.46, std=0.09, sample_count=105),
-    )
-    p2 = LearningParams(
-        current_kA=ParamStats(mean=7.57, std=0.16, sample_count=108),
-        weld_time_cycle=ParamStats(mean=11.9, std=0.39, sample_count=108),
-        force_kN=ParamStats(mean=3.47, std=0.08, sample_count=108),
-    )
+    n0 = target_sample_count
+    n1 = n0 + 5
+    n2 = params.current_kA.sample_count
+
+    def _with_count(base: LearningParams, n: int) -> LearningParams:
+        return LearningParams(
+            current_kA=ParamStats(mean=base.current_kA.mean, std=base.current_kA.std, sample_count=n),
+            weld_time_cycle=ParamStats(mean=base.weld_time_cycle.mean, std=base.weld_time_cycle.std, sample_count=n),
+            force_kN=ParamStats(mean=base.force_kN.mean, std=base.force_kN.std, sample_count=n),
+        )
+
+    p0 = _with_count(params, n0)
+    p1 = _with_count(params, n1)
 
     fb_ids_1 = [f"evt_seed_fb1_{i:03d}" for i in range(1, 6)]
     fb_ids_2 = [f"evt_seed_fb2_{i:03d}" for i in range(1, 4)]
@@ -367,10 +369,10 @@ async def seed_learning_history(
         line_id=line_id,
         part_id=part_id,
         status=LearningStatus.COMPLETE,
-        target_sample_count=100,
-        sample_count=108,
+        target_sample_count=n0,
+        sample_count=n2,
         sample_window_start=t0,
-        params=p2,
+        params=params,
         feedback_event_ids=fb_ids_1 + fb_ids_2,
         history=[
             LearningHistoryEntry(
@@ -378,7 +380,7 @@ async def seed_learning_history(
                 trigger=LearningTrigger.INITIAL,
                 source_queue_id=None,
                 source_event_ids=[],
-                sample_count=100,
+                sample_count=n0,
                 params=p0,
             ),
             LearningHistoryEntry(
@@ -386,7 +388,7 @@ async def seed_learning_history(
                 trigger=LearningTrigger.FEEDBACK,
                 source_queue_id="q_seed_001",
                 source_event_ids=fb_ids_1,
-                sample_count=105,
+                sample_count=n1,
                 params=p1,
             ),
             LearningHistoryEntry(
@@ -394,8 +396,8 @@ async def seed_learning_history(
                 trigger=LearningTrigger.FEEDBACK,
                 source_queue_id="q_seed_002",
                 source_event_ids=fb_ids_2,
-                sample_count=108,
-                params=p2,
+                sample_count=n2,
+                params=params,
             ),
         ],
         created_at=t0,

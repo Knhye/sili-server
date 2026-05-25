@@ -132,7 +132,10 @@ async def seed_learning_endpoint(
     히스토그램·추세 그래프 개발 시 사용.
     """
     session = await seed_learning_history(
-        line_id=payload.line_id, part_id=payload.part_id
+        line_id=payload.line_id,
+        part_id=payload.part_id,
+        target_sample_count=payload.target_sample_count,
+        params=payload.params,
     )
     return success_response(
         data=LearningRead.from_document(session).model_dump(mode="json"),

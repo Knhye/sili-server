@@ -47,6 +47,17 @@ class LearningSeedRequest(BaseModel):
 
     line_id: str = Field(..., min_length=1, max_length=64, examples=["LINE-A"])
     part_id: str = Field(..., min_length=1, max_length=64, examples=["BODY-0042"])
+    target_sample_count: int = Field(
+        default=100,
+        ge=2,
+        le=10000,
+        description="목표 표본 수. 기본 100.",
+        examples=[100],
+    )
+    params: LearningParams = Field(
+        ...,
+        description="시드로 주입할 실측 학습 파라미터 (μ/σ/n).",
+    )
 
 
 class LearningRead(BaseModel):

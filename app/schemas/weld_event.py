@@ -16,12 +16,10 @@ class WeldEventCreate(BaseModel):
     """
 
     line_id: str = Field(
-        default="LINE-DEFAULT",
+        ...,
         min_length=1,
         max_length=64,
-        description=(
-            "생산 라인 식별자. F-03 학습 집계 키. 생략 시 'LINE-DEFAULT'."
-        ),
+        description="생산 라인 식별자. F-03 학습 집계 키.",
         examples=["LINE-A"],
     )
     part_id: str = Field(
