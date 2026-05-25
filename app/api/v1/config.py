@@ -5,9 +5,10 @@
 - GET    /api/v1/config/audit   : 변경 이력 조회 (최신순).
 """
 
-from fastapi import APIRouter, Header, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 
 from app.core.response import ApiResponse, success_response
+from app.models.welding_config import ThicknessLimitRange
 from app.schemas.config import ConfigAuditRead, ConfigRead, ConfigUpdate
 from app.services.config_service import (
     get_or_init_config,
@@ -45,6 +46,26 @@ async def patch_config(
         data=ConfigRead.from_document(config).model_dump(mode="json"),
         message="시스템 설정 부분이 갱신되었습니다.",
     )
+
+
+@router.get(
+    "/thickness-limits",
+    response_model=ApiResponse[ThicknessLimitRange],
+    summary="두께 조합 임계값 조회",
+)
+async def get_thickness_limits(
+    t1: float = Query(..., gt=0, description="판재 1 두께 (mm). 예: 0.8"),
+    t2: float = Query(..., gt=0, description="판재 2 두께 (mm). 예: 1.2"),
+):
+    config = await get_or_init_config()
+    combo = f"{t1}+{t2}"
+    limits = config.thickness_limits.get(combo)
+    if limits is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"두께 조합 '{combo}'이 등록되지 않았습니다. /config의 thickness_limits를 확인하세요.",
+        )
+    return success_response(data=limits.model_dump(mode="json"))
 
 
 @router.get(

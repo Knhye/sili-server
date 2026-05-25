@@ -42,6 +42,16 @@ class ParamStats(BaseModel):
     sample_count: int = Field(..., ge=2, description="통계 산출에 사용된 표본 수.")
 
 
+class WearStats(BaseModel):
+    """전극 누적 타수 통계 (μ/σ + μ±3σ 정상 범위 경계)."""
+
+    mean: float = Field(..., description="평균 누적 타수 (μ).")
+    std: float = Field(..., ge=0, description="표본 표준편차 (σ, n-1 분모).")
+    lo: float = Field(..., ge=0, description="정상 하한 (μ - 3σ, 최솟값 0).")
+    hi: float = Field(..., description="정상 상한 (μ + 3σ).")
+    sample_count: int = Field(..., ge=2, description="통계 산출에 사용된 표본 수.")
+
+
 class LearningParams(BaseModel):
     """학습된 정상 범위 파라미터.
 
@@ -52,6 +62,7 @@ class LearningParams(BaseModel):
     current_kA: ParamStats
     weld_time_cycle: ParamStats
     force_kN: ParamStats
+    wear: WearStats | None = Field(default=None, description="전극 누적 타수 통계.")
 
 
 class LearningHistoryEntry(BaseModel):

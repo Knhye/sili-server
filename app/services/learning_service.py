@@ -33,6 +33,7 @@ from app.models.learning import (
     LearningTrigger,
     NormalRangeLearning,
     ParamStats,
+    WearStats,
 )
 from app.models.weld_event import WeldEvent
 
@@ -122,6 +123,9 @@ def _compute_params(events: list[WeldEvent]) -> LearningParams | None:
     currents = [e.current_kA for e in events]
     times = [e.weld_time_cycle for e in events]
     forces = [e.force_kN for e in events]
+    hits = [float(e.cumulative_hits) for e in events]
+    hits_mean = mean(hits)
+    hits_std = stdev(hits)
     return LearningParams(
         current_kA=ParamStats(
             mean=mean(currents), std=stdev(currents), sample_count=n
@@ -131,6 +135,13 @@ def _compute_params(events: list[WeldEvent]) -> LearningParams | None:
         ),
         force_kN=ParamStats(
             mean=mean(forces), std=stdev(forces), sample_count=n
+        ),
+        wear=WearStats(
+            mean=hits_mean,
+            std=hits_std,
+            lo=max(0.0, hits_mean - 3 * hits_std),
+            hi=hits_mean + 3 * hits_std,
+            sample_count=n,
         ),
     )
 
@@ -353,10 +364,20 @@ async def seed_learning_history(
     n2 = params.current_kA.sample_count
 
     def _with_count(base: LearningParams, n: int) -> LearningParams:
+        wear = None
+        if base.wear is not None:
+            wear = WearStats(
+                mean=base.wear.mean,
+                std=base.wear.std,
+                lo=max(0.0, base.wear.mean - 3 * base.wear.std),
+                hi=base.wear.mean + 3 * base.wear.std,
+                sample_count=n,
+            )
         return LearningParams(
             current_kA=ParamStats(mean=base.current_kA.mean, std=base.current_kA.std, sample_count=n),
             weld_time_cycle=ParamStats(mean=base.weld_time_cycle.mean, std=base.weld_time_cycle.std, sample_count=n),
             force_kN=ParamStats(mean=base.force_kN.mean, std=base.force_kN.std, sample_count=n),
+            wear=wear,
         )
 
     p0 = _with_count(params, n0)

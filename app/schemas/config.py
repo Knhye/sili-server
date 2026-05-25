@@ -74,6 +74,13 @@ class ConfigRead(BaseModel):
     alert_sound_enabled: bool = Field(..., description="알림 사운드 활성화 여부.")
     alert_visual_enabled: bool = Field(..., description="알림 시각 효과 활성화 여부.")
     updated_at: datetime = Field(..., description="마지막 변경 시각 (UTC).")
+    score_weights: dict[str, float] = Field(
+        ...,
+        description=(
+            "F-05 판정 점수 가중치 (합계 1.00). "
+            "키: current / weld_time / force / wear / thickness / material."
+        ),
+    )
 
     @classmethod
     def from_document(cls, doc) -> "ConfigRead":
@@ -90,6 +97,14 @@ class ConfigRead(BaseModel):
             alert_sound_enabled=doc.alert_sound_enabled,
             alert_visual_enabled=doc.alert_visual_enabled,
             updated_at=doc.updated_at,
+            score_weights={
+                "current": 0.30,
+                "weld_time": 0.20,
+                "force": 0.20,
+                "wear": 0.15,
+                "thickness": 0.10,
+                "material": 0.05,
+            },
         )
 
 

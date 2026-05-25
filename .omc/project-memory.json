@@ -143,14 +143,20 @@
   "hotPaths": [
     {
       "path": "app\\api\\v1\\router.py",
-      "accessCount": 19,
-      "lastAccessed": 1779452384273,
+      "accessCount": 20,
+      "lastAccessed": 1779721884645,
       "type": "file"
     },
     {
       "path": "app\\services\\weld_event_service.py",
-      "accessCount": 16,
-      "lastAccessed": 1779717542310,
+      "accessCount": 17,
+      "lastAccessed": 1779721905303,
+      "type": "file"
+    },
+    {
+      "path": "app\\models\\weld_event.py",
+      "accessCount": 17,
+      "lastAccessed": 1779721950340,
       "type": "file"
     },
     {
@@ -160,33 +166,39 @@
       "type": "file"
     },
     {
-      "path": "app\\models\\weld_event.py",
-      "accessCount": 14,
-      "lastAccessed": 1779235691691,
-      "type": "file"
-    },
-    {
       "path": "app",
-      "accessCount": 14,
-      "lastAccessed": 1779717552872,
+      "accessCount": 15,
+      "lastAccessed": 1779721979287,
       "type": "directory"
     },
     {
       "path": "app\\services\\judgement.py",
-      "accessCount": 11,
-      "lastAccessed": 1779069134153,
-      "type": "file"
-    },
-    {
-      "path": "app\\schemas\\weld_event.py",
-      "accessCount": 11,
-      "lastAccessed": 1779717750952,
+      "accessCount": 14,
+      "lastAccessed": 1779721936997,
       "type": "file"
     },
     {
       "path": "docs\\v1_기능명세서.md",
-      "accessCount": 10,
-      "lastAccessed": 1778977754986,
+      "accessCount": 13,
+      "lastAccessed": 1779721956776,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\config.py",
+      "accessCount": 13,
+      "lastAccessed": 1779722370916,
+      "type": "file"
+    },
+    {
+      "path": "app\\schemas\\weld_event.py",
+      "accessCount": 12,
+      "lastAccessed": 1779721906122,
+      "type": "file"
+    },
+    {
+      "path": "app\\api\\v1\\config.py",
+      "accessCount": 11,
+      "lastAccessed": 1779722387938,
       "type": "file"
     },
     {
@@ -202,15 +214,9 @@
       "type": "file"
     },
     {
-      "path": "app\\schemas\\config.py",
-      "accessCount": 10,
-      "lastAccessed": 1779717547915,
-      "type": "file"
-    },
-    {
       "path": "app\\models\\welding_config.py",
-      "accessCount": 9,
-      "lastAccessed": 1779453188799,
+      "accessCount": 10,
+      "lastAccessed": 1779721888698,
       "type": "file"
     },
     {
@@ -250,21 +256,15 @@
       "type": "file"
     },
     {
-      "path": "app\\api\\v1\\config.py",
+      "path": "app\\models\\reinspection.py",
       "accessCount": 7,
-      "lastAccessed": 1779717525995,
+      "lastAccessed": 1779722038017,
       "type": "file"
     },
     {
       "path": "requirements.txt",
       "accessCount": 6,
       "lastAccessed": 1779235405629,
-      "type": "file"
-    },
-    {
-      "path": "app\\models\\reinspection.py",
-      "accessCount": 6,
-      "lastAccessed": 1779235652964,
       "type": "file"
     },
     {

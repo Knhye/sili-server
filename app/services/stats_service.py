@@ -13,6 +13,7 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
+from app.models.reinspection import ReinspectionQueue, ReinspectionStatus
 from app.models.weld_event import JudgementStatus, WeldEvent
 
 
@@ -84,3 +85,69 @@ async def get_shift_stats(
         "pass_rate": pass_rate,
         "hourly_rate": hourly_rate,
     }
+
+
+async def get_user_performance_stats(
+    *,
+    inspector_id: str | None = None,
+    hours: int | None = None,
+    now: datetime | None = None,
+) -> list[dict[str, Any]]:
+    """검사자별 퍼포먼스 통계.
+
+    CLOSED 재검 큐를 inspector_id 기준으로 집계한다.
+
+    Args:
+        inspector_id: 특정 검사자 필터. None 이면 전체 검사자.
+        hours: 윈도우 시간 길이. None 이면 전체 기간.
+        now: 종료 시각(테스트용). None 이면 현재 UTC.
+
+    Returns:
+        검사자별:
+          - inspector_id
+          - recheck_count: 처리한 재검 큐 건수
+          - monitored_points: 감시한 총 타점 수 (event_ids 합산)
+          - defect_count: 실제 불량 건수
+          - pass_count: 오탐(정상) 판정 건수
+          - pass_rate: 오탐률 (pass_count / recheck_count, 합격으로 처리된 비율)
+    """
+    end = now if now is not None else datetime.now(timezone.utc)
+
+    query: dict[str, Any] = {"status": ReinspectionStatus.CLOSED.value}
+    if hours is not None:
+        start = end - timedelta(hours=hours)
+        query["closed_at"] = {"$gte": start, "$lte": end}
+    if inspector_id is not None:
+        query["result.inspector_id"] = inspector_id
+
+    closed_queues = await ReinspectionQueue.find(query).to_list()
+
+    stats: dict[str, dict[str, Any]] = {}
+    for q in closed_queues:
+        if q.result is None:
+            continue
+        iid = q.result.inspector_id
+        if iid not in stats:
+            stats[iid] = {
+                "inspector_id": iid,
+                "recheck_count": 0,
+                "monitored_points": 0,
+                "defect_count": 0,
+                "pass_count": 0,
+            }
+        s = stats[iid]
+        s["recheck_count"] += 1
+        s["monitored_points"] += len(q.event_ids)
+        if q.result.is_defect:
+            s["defect_count"] += 1
+        else:
+            s["pass_count"] += 1
+
+    rows: list[dict[str, Any]] = []
+    for s in stats.values():
+        rc = s["recheck_count"]
+        s["pass_rate"] = round(s["pass_count"] / rc, 4) if rc > 0 else None
+        rows.append(s)
+
+    rows.sort(key=lambda x: x["recheck_count"], reverse=True)
+    return rows
