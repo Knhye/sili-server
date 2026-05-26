@@ -6,7 +6,7 @@
 from fastapi import APIRouter, Query
 
 from app.core.response import ApiResponse, success_response
-from app.services.stats_service import get_shift_stats, get_user_performance_stats
+from app.services.stats_service import get_hourly_stats, get_shift_stats, get_user_performance_stats
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -25,6 +25,23 @@ async def get_shift_stats_endpoint(
     ),
 ):
     data = await get_shift_stats(hours=hours, line_id=line_id)
+    return success_response(data=data)
+
+
+@router.get(
+    "/hourly",
+    response_model=ApiResponse[list],
+    summary="시간대별 판정 현황 (N시간 × 1시간 버킷)",
+)
+async def get_hourly_stats_endpoint(
+    hours: int = Query(
+        default=24, ge=1, le=168, description="조회 범위 시간 수 (기본 24h, 최대 168h)."
+    ),
+    line_id: str | None = Query(
+        default=None, description="라인 필터. 미지정 시 전체 라인."
+    ),
+):
+    data = await get_hourly_stats(hours=hours, line_id=line_id)
     return success_response(data=data)
 
 

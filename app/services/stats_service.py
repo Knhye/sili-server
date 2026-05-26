@@ -87,6 +87,89 @@ async def get_shift_stats(
     }
 
 
+async def get_hourly_stats(
+    *,
+    hours: int = 24,
+    line_id: str | None = None,
+    now: datetime | None = None,
+) -> list[dict[str, Any]]:
+    """최근 N시간을 1시간 단위 버킷으로 집계.
+
+    Returns:
+        hour 0 (가장 오래된 버킷) ~ hour N-1 (가장 최근) 순서의 리스트.
+        판정 없는 이벤트는 normal/caution/reject 에 포함되지 않으나 total 에는 포함.
+    """
+    end = now if now is not None else datetime.now(timezone.utc)
+    start = end - timedelta(hours=hours)
+
+    match: dict[str, Any] = {"timestamp": {"$gte": start, "$lte": end}}
+    if line_id is not None:
+        match["line_id"] = line_id
+
+    pipeline = [
+        {"$match": match},
+        {
+            "$group": {
+                "_id": {
+                    "$floor": {
+                        "$divide": [
+                            {"$subtract": ["$timestamp", start]},
+                            3_600_000,
+                        ]
+                    }
+                },
+                "normal": {
+                    "$sum": {
+                        "$cond": [
+                            {"$eq": ["$judgement.status", JudgementStatus.NORMAL.value]},
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "caution": {
+                    "$sum": {
+                        "$cond": [
+                            {"$eq": ["$judgement.status", JudgementStatus.CAUTION.value]},
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "reject": {
+                    "$sum": {
+                        "$cond": [
+                            {"$eq": ["$judgement.status", JudgementStatus.REJECT.value]},
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "total": {"$sum": 1},
+            }
+        },
+    ]
+
+    rows = await WeldEvent.aggregate(pipeline).to_list()
+
+    bucket_map: dict[int, dict[str, Any]] = {}
+    for row in rows:
+        h = int(row["_id"])
+        if 0 <= h < hours:
+            bucket_map[h] = {
+                "hour": h,
+                "normal": row["normal"],
+                "caution": row["caution"],
+                "reject": row["reject"],
+                "total": row["total"],
+            }
+
+    return [
+        bucket_map.get(h, {"hour": h, "normal": 0, "caution": 0, "reject": 0, "total": 0})
+        for h in range(hours)
+    ]
+
+
 async def get_user_performance_stats(
     *,
     inspector_id: str | None = None,
