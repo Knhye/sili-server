@@ -26,6 +26,7 @@ from typing import Any
 from pymongo.errors import DuplicateKeyError
 
 from app.core.exceptions import AppException
+from app.db.session import get_db
 from app.models.learning import (
     LearningHistoryEntry,
     LearningParams,
@@ -85,9 +86,8 @@ async def reset_learning(
     query: dict[str, Any] = {"line_id": line_id}
     if part_id is not None:
         query["part_id"] = part_id
-    result = (
-        await NormalRangeLearning.get_motor_collection().delete_many(query)
-    )
+    coll = get_db().get_collection(NormalRangeLearning.Settings.name)
+    result = await coll.delete_many(query)
     return result.deleted_count
 
 
