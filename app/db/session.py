@@ -25,9 +25,10 @@ async def init_db() -> None:
     global _client, _db
     from app import models
 
+    use_tls = settings.MONGODB_URL.startswith("mongodb+srv")
     _client = AsyncIOMotorClient(
         settings.MONGODB_URL,
-        tlsCAFile=certifi.where(),
+        **({"tlsCAFile": certifi.where()} if use_tls else {}),
         serverSelectionTimeoutMS=10_000,
     )
     _db = _client[settings.MONGODB_DB]

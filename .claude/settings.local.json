@@ -35,7 +35,9 @@
       "PowerShell(& \"C:\\\\Users\\\\knhye\\\\sili-server\\\\venv\\\\Scripts\\\\uvicorn.exe\" --version 2>&1)",
       "Bash(Get-ChildItem C:\\\\Users\\\\knhye\\\\sili-server -Exclude venv)",
       "Bash(Select-Object Name)",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\knhye\\\\sili-server\\\\venv\\\\Lib\\\\site-packages\\\\pymongo\" -Directory)",
+      "Bash(venv\\\\Scripts\\\\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000)"
     ]
   }
 }

@@ -142,27 +142,39 @@
   },
   "hotPaths": [
     {
+      "path": "app\\db\\session.py",
+      "accessCount": 27,
+      "lastAccessed": 1779843576382,
+      "type": "file"
+    },
+    {
       "path": "app\\api\\v1\\router.py",
-      "accessCount": 21,
-      "lastAccessed": 1779806286601,
+      "accessCount": 23,
+      "lastAccessed": 1779841893113,
       "type": "file"
     },
     {
       "path": "app\\services\\weld_event_service.py",
-      "accessCount": 18,
-      "lastAccessed": 1779806286667,
+      "accessCount": 20,
+      "lastAccessed": 1779842536109,
       "type": "file"
     },
     {
       "path": "app\\models\\weld_event.py",
-      "accessCount": 18,
-      "lastAccessed": 1779806290927,
+      "accessCount": 19,
+      "lastAccessed": 1779807862469,
       "type": "file"
     },
     {
       "path": "app\\models\\__init__.py",
+      "accessCount": 17,
+      "lastAccessed": 1779841893357,
+      "type": "file"
+    },
+    {
+      "path": "app\\main.py",
       "accessCount": 16,
-      "lastAccessed": 1779753556334,
+      "lastAccessed": 1779841892598,
       "type": "file"
     },
     {
@@ -175,12 +187,6 @@
       "path": "app\\services\\judgement.py",
       "accessCount": 14,
       "lastAccessed": 1779721936997,
-      "type": "file"
-    },
-    {
-      "path": "app\\main.py",
-      "accessCount": 14,
-      "lastAccessed": 1779758730656,
       "type": "file"
     },
     {
@@ -220,12 +226,6 @@
       "type": "file"
     },
     {
-      "path": "app\\db\\session.py",
-      "accessCount": 10,
-      "lastAccessed": 1779758730038,
-      "type": "file"
-    },
-    {
       "path": "app\\api\\v1\\notifications.py",
       "accessCount": 9,
       "lastAccessed": 1779717525830,
@@ -241,6 +241,12 @@
       "path": "app\\core\\openapi.py",
       "accessCount": 8,
       "lastAccessed": 1779754023950,
+      "type": "file"
+    },
+    {
+      "path": "app\\core\\config.py",
+      "accessCount": 8,
+      "lastAccessed": 1779842434963,
       "type": "file"
     },
     {
@@ -268,15 +274,9 @@
       "type": "file"
     },
     {
-      "path": "app\\core\\config.py",
-      "accessCount": 7,
-      "lastAccessed": 1779755119713,
-      "type": "file"
-    },
-    {
       "path": "requirements.txt",
-      "accessCount": 6,
-      "lastAccessed": 1779235405629,
+      "accessCount": 7,
+      "lastAccessed": 1779808475169,
       "type": "file"
     },
     {
