@@ -42,6 +42,7 @@ async def get_shift_stats(
         - pass_rate: 합격률 (0~1, 판정 완료 기준). judged==0 이면 None.
         - hourly_rate: 시간당 생산 (total/hours, 소수점 1자리).
     """
+    hours = max(1, min(int(hours), 24))
     end = now if now is not None else datetime.now(timezone.utc)
     start = end - timedelta(hours=hours)
 
@@ -99,6 +100,7 @@ async def get_hourly_stats(
         hour 0 (가장 오래된 버킷) ~ hour N-1 (가장 최근) 순서의 리스트.
         판정 없는 이벤트는 normal/caution/reject 에 포함되지 않으나 total 에는 포함.
     """
+    hours = max(1, min(int(hours), 168))
     end = now if now is not None else datetime.now(timezone.utc)
     start = end - timedelta(hours=hours)
 

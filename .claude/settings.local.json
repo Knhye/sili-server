@@ -47,7 +47,8 @@
       "PowerShell(Start-Process -FilePath \".\\\\venv\\\\Scripts\\\\uvicorn.exe\" -ArgumentList \"app.main:app\",\"--host\",\"0.0.0.0\",\"--port\",\"8000\" -NoNewWindow -PassThru | Select-Object -ExpandProperty Id)",
       "PowerShell(Start-Sleep -Seconds 5; try { \\(Invoke-WebRequest -Uri \"http://localhost:8000/\" -UseBasicParsing\\).Content } catch { $_.Exception.Message })",
       "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:8000/api/v1/reinspection/daily-defects\" -UseBasicParsing\\).Content | ConvertFrom-Json | ConvertTo-Json -Depth 10)",
-      "PowerShell(Stop-Process *)"
+      "PowerShell(Stop-Process *)",
+      "Bash(Test-Path *)"
     ]
   }
 }
