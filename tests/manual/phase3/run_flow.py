@@ -24,6 +24,20 @@ from pathlib import Path
 
 FIXTURES = Path(__file__).parent / "fixtures.json"
 
+_ALLOWED_SCHEMES = {"http", "https"}
+
+
+def _validate_base_url(base: str) -> str:
+    parsed = urllib.parse.urlparse(base)
+    if parsed.scheme not in _ALLOWED_SCHEMES or not parsed.netloc:
+        raise ValueError(f"유효하지 않은 base URL: {base!r} (http/https 만 허용)")
+    return base.rstrip("/")
+
+
+def _path(value: str) -> str:
+    """URL 경로 세그먼트를 안전하게 인코딩."""
+    return urllib.parse.quote(str(value), safe="")
+
 
 # --------------------------------------------------------------------------- #
 # HTTP 헬퍼
@@ -31,6 +45,9 @@ FIXTURES = Path(__file__).parent / "fixtures.json"
 
 
 def _request(method: str, url: str, body: dict | None = None) -> tuple[int, dict]:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in _ALLOWED_SCHEMES or not parsed.netloc:
+        raise ValueError(f"유효하지 않은 요청 URL: {url!r}")
     data = json.dumps(body).encode("utf-8") if body is not None else None
     req = urllib.request.Request(url, data=data, method=method)
     if data is not None:
@@ -88,7 +105,7 @@ def step_register_part(base: str, part: dict) -> bool:
             for k, v in part.items()
             if k not in ("_note", "part_id") and not k.startswith("_")
         }
-        status, resp = patch(f"{base}/api/v1/parts/{part['part_id']}", update)
+        status, resp = patch(f"{base}/api/v1/parts/{_path(part['part_id'])}", update)
         return assert_eq("PATCH 응답 코드", status, 200)
     return assert_eq("POST 응답 코드", status, 201)
 
@@ -164,14 +181,14 @@ def step_submit_result(base: str, queues: list[dict], result: dict) -> bool:
     target = queues[0]
     qid = target["queue_id"]
     status, resp = post(
-        f"{base}/api/v1/reinspection/{qid}/result", strip_underscore_keys(result)
+        f"{base}/api/v1/reinspection/{_path(qid)}/result", strip_underscore_keys(result)
     )
     ok1 = assert_eq("HTTP 201", status, 201)
     ok2 = resp.get("data", {}).get("status") == "CLOSED"
     print(f"  {'OK  ' if ok2 else 'FAIL'} | status == CLOSED")
 
     status, resp = post(
-        f"{base}/api/v1/reinspection/{qid}/result", strip_underscore_keys(result)
+        f"{base}/api/v1/reinspection/{_path(qid)}/result", strip_underscore_keys(result)
     )
     ok3 = assert_eq("재등록 시 409", status, 409)
     return ok1 and ok2 and ok3
@@ -220,7 +237,7 @@ def step_judgement_detail(base: str) -> bool:
     print("\n[STEP 7] F-09 판정 상세")
     _, resp = get(f"{base}/api/v1/weld-events?part_id=TEST-PHASE3&status=REJECT")
     event_id = resp["data"][0]["event_id"]
-    status, resp = get(f"{base}/api/v1/judgements/{event_id}")
+    status, resp = get(f"{base}/api/v1/judgements/{_path(event_id)}")
     ok1 = assert_eq("HTTP 200", status, 200)
     j = resp["data"]
     ok2 = j["event_id"] == event_id and j["status"] == "REJECT"
@@ -234,7 +251,15 @@ def step_judgement_detail(base: str) -> bool:
 
 def step_csv_export(base: str) -> bool:
     print("\n[STEP 8] F-09 CSV 내보내기")
-    url = f"{base}/api/v1/exports/weld-events.csv?part_id=TEST-PHASE3"
+    parsed = urllib.parse.urlparse(base)
+    url = urllib.parse.urlunparse((
+        parsed.scheme,
+        parsed.netloc,
+        "/api/v1/exports/weld-events.csv",
+        "",
+        "part_id=TEST-PHASE3",
+        "",
+    ))
     req = urllib.request.Request(url, method="GET")
     with urllib.request.urlopen(req) as r:
         ctype = r.headers.get("Content-Type", "")
@@ -257,24 +282,25 @@ def main() -> int:
     ap.add_argument("--base-url", default="http://localhost:8000")
     args = ap.parse_args()
 
+    base_url = _validate_base_url(args.base_url)
     fixtures = json.loads(FIXTURES.read_text(encoding="utf-8"))
 
     results: list[tuple[str, bool]] = []
-    results.append(("part 등록", step_register_part(args.base_url, fixtures["part"])))
-    saved = step_ingest_events(args.base_url, fixtures["events"])
+    results.append(("part 등록", step_register_part(base_url, fixtures["part"])))
+    saved = step_ingest_events(base_url, fixtures["events"])
     results.append(("이벤트 6건 ingest", len(saved) == 6))
-    results.append(("F-07 latest", step_check_latest(args.base_url)))
-    queues = step_check_queues(args.base_url)
+    results.append(("F-07 latest", step_check_latest(base_url)))
+    queues = step_check_queues(base_url)
     results.append(("F-06 큐 4건", len(queues) == 4))
     results.append((
         "F-06 결과 등록 + 중복 409",
         step_submit_result(
-            args.base_url, queues, fixtures["reinspection_result_sample"]
+            base_url, queues, fixtures["reinspection_result_sample"]
         ),
     ))
-    results.append(("F-09 이력 필터", step_history_filters(args.base_url)))
-    results.append(("F-09 판정 상세", step_judgement_detail(args.base_url)))
-    results.append(("F-09 CSV 내보내기", step_csv_export(args.base_url)))
+    results.append(("F-09 이력 필터", step_history_filters(base_url)))
+    results.append(("F-09 판정 상세", step_judgement_detail(base_url)))
+    results.append(("F-09 CSV 내보내기", step_csv_export(base_url)))
 
     print("\n" + "=" * 60)
     print("결과 요약")
